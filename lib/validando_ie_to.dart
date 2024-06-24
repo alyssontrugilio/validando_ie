@@ -1,5 +1,4 @@
 bool checkInscricaoEstadualTO(String ie) {
-  // Verifica se a inscrição estadual atende a nova ou a antiga regra de validação
   return _checkAntiga(ie) || _checkNova(ie);
 }
 
@@ -13,7 +12,6 @@ bool _checkAntiga(String ie) {
     return false;
   }
 
-  // Remove a categoria do cálculo de validação
   final corpo = ie.substring(0, 2) + ie.substring(4, ie.length - 1);
   final digitoVerificador = ie.substring(ie.length - 1);
 
@@ -66,6 +64,6 @@ String _calculaDigitoNova(String corpo) {
 }
 
 void main() {
-  print(checkInscricaoEstadualTO('243429330'));
+  print(checkInscricaoEstadualTO('57039418979'));
   print(checkInscricaoEstadualTO('104960051'));
 }
