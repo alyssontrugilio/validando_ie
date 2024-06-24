@@ -1,56 +1,71 @@
-bool checkInscricaoEstadualTO(String inscricaoEstadual) {
-  return checkAntiga(inscricaoEstadual) || checkNova(inscricaoEstadual);
+bool checkInscricaoEstadualTO(String ie) {
+  // Verifica se a inscrição estadual atende a nova ou a antiga regra de validação
+  return _checkAntiga(ie) || _checkNova(ie);
 }
 
-bool checkAntiga(String inscricaoEstadual) {
-  bool valid = true;
-  if (inscricaoEstadual.length != 11) {
-    valid = false;
+bool _checkAntiga(String ie) {
+  if (ie.length != 11) {
+    return false;
   }
 
-  if (valid) {
-    String categoria = inscricaoEstadual.substring(2, 4);
-    if (!['01', '02', '03', '99'].contains(categoria)) {
-      valid = false;
-    }
-    String corpo = inscricaoEstadual.replaceRange(2, 4, '');
-    valid = calculaDigito(corpo);
+  final categoria = ie.substring(2, 4);
+  if (!['01', '02', '03', '99'].contains(categoria)) {
+    return false;
   }
 
-  return valid;
+  // Remove a categoria do cálculo de validação
+  final corpo = ie.substring(0, 2) + ie.substring(4, ie.length - 1);
+  final digitoVerificador = ie.substring(ie.length - 1);
+
+  return _calculaDigito(corpo) == digitoVerificador;
 }
 
-bool checkNova(String inscricaoEstadual) {
-  return inscricaoEstadual.length == 9 && calculaDigitoNova(inscricaoEstadual);
+bool _checkNova(String ie) {
+  if (ie.length != 9) {
+    return false;
+  }
+
+  return _calculaDigitoNova(ie.substring(0, ie.length - 1)) ==
+      ie.substring(ie.length - 1);
 }
 
-bool calculaDigitoNova(String inscricaoEstadual) {
-  int peso = 9;
-  int soma = 0;
-  int length = inscricaoEstadual.length;
-  int posicao = length - 1;
-  String corpo = inscricaoEstadual.substring(0, length - 1);
+String _calculaDigito(String corpo) {
+  var soma = 0;
+  var peso = 9;
 
-  for (int i = 0; i < corpo.length; i++) {
+  for (var i = 0; i < corpo.length; i++) {
     soma += int.parse(corpo[i]) * peso;
     peso--;
   }
 
-  int resto = soma % 11;
-  int dig = 11 - resto;
-
+  final resto = soma % 11;
+  var digito = 11 - resto;
   if (resto < 2) {
-    dig = 0;
+    digito = 0;
   }
 
-  return dig == int.parse(inscricaoEstadual[posicao]);
+  return digito.toString();
 }
 
-bool calculaDigito(String corpo) {
-  // Implemente a lógica para calcular o dígito para a regra antiga
-  return true;
+String _calculaDigitoNova(String corpo) {
+  var soma = 0;
+  var peso = 9;
+
+  for (var i = 0; i < corpo.length; i++) {
+    soma += int.parse(corpo[i]) * peso;
+    peso--;
+  }
+
+  final resto = soma % 11;
+  var digito = 11 - resto;
+  if (resto < 2) {
+    digito = 0;
+  }
+
+  return digito.toString();
 }
 
 void main() {
-  print(checkInscricaoEstadualTO('104505320')); // should print: true
+  print(checkInscricaoEstadualTO('243429330'));
+  print(checkInscricaoEstadualTO('104960051'));
 }
