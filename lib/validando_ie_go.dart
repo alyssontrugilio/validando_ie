@@ -1,45 +1,39 @@
 bool checkInscricaoEstadualGO(String inscricaoEstadual) {
-  bool valid = true;
-  int length = inscricaoEstadual.length;
-
-  if (length != 9) {
-    valid = false;
+  if (inscricaoEstadual.length != 9) {
+    return false;
   }
 
-  if (valid) {
-    String corpo = inscricaoEstadual.substring(0, length - 1);
-    int modulo = 11;
-
-    int calculaDigito(String corpo, int modulo) {
-      int peso = 9;
-      int soma = 0;
-
-      for (int i = 0; i < corpo.length; i++) {
-        soma += int.parse(corpo[i]) * peso;
-        peso--;
-      }
-
-      int resto = soma % modulo;
-      int dig;
-
-      if (resto == 0 || resto == 1) {
-        dig = 0;
-      } else {
-        dig = modulo - resto;
-      }
-
-      return dig;
-    }
-
-    int digito = calculaDigito(corpo, modulo);
-    int posDigito = inscricaoEstadual.length - 1;
-
-    valid = inscricaoEstadual[posDigito] == digito.toString();
+  var inicio = int.parse(inscricaoEstadual.substring(0, 2));
+  if (!(inicio == 10 || inicio == 11 || (inicio >= 20 && inicio <= 29))) {
+    return false;
   }
 
-  return valid;
+  return calculaDigito(inscricaoEstadual);
+}
+
+bool calculaDigito(String inscricaoEstadual) {
+  int soma = 0;
+  int peso = 9;
+
+  for (int i = 0; i < 8; i++) {
+    soma += int.parse(inscricaoEstadual[i]) * peso;
+    peso--;
+  }
+
+  int resto = soma % 11;
+  int digitoVerificador;
+
+  if (resto == 0 || resto == 1) {
+    digitoVerificador = 0;
+  } else {
+    digitoVerificador = 11 - resto;
+  }
+
+  return digitoVerificador == int.parse(inscricaoEstadual[8]);
 }
 
 void main() {
-  print(checkInscricaoEstadualGO('150150113'));
+  print(
+    checkInscricaoEstadualGO("124444652"),
+  );
 }
